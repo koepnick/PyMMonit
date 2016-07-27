@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import requests
+import json
 
 __version__ = '0.1.0'
-__author__ = 'Javier Palomo Almena'
+__author__ = 'Sam Koepnick'
 
 
-class MMonit:
+class MMonit(object):
 
     def __init__(self, mmonit_url, username, password):
         self.mmonit_url = mmonit_url
@@ -27,6 +28,8 @@ class MMonit:
 
     def _get(self, url):
         result = self.session.get(self.mmonit_url + url)
+        #b=json.loads(result.content.decode('latin-1'))
+        #print(b)
         return result.content
 
     def _post(self, url, data=None):
@@ -58,59 +61,59 @@ class MMonit:
             data['led'] = kwargs['led']
 
         if not data:
-            return self._get("/status/hosts/list")
-        return self._post("/status/hosts/list", data)
+            return json.loads(self._get("/status/hosts/list").decode('utf-8'))
+        return json.loads(self._post("/status/hosts/list", data).decode('utf-8'))
 
     def hosts_get(self, host_id):
         """
         Returns detailed status of the given host.
         """
-        return self._get("/status/hosts/get?id={}".format(host_id))
+        return json.loads(self._get("/status/hosts/get?id={}".format(host_id)).decode('utf-8'))
 
     def hosts_summary(self):
         """
         Returns a status summary of all hosts.
         """
-        return  self._get("/status/hosts/summary")
+        return  json.loads(self._get("/status/hosts/summary").decode('utf-8'))
 
     """
     http://mmonit.com/documentation/http-api/Methods/Uptime
     """
     def uptime_hosts(self):
-        return self._get("/reports/uptime/list")
+        return json.loads(self._get("/reports/uptime/list").decode('utf-8'))
 
     def uptime_services(self):
-        return self._get("/reports/uptime/get")
+        return json.loads(self._get("/reports/uptime/get").decode('utf-8'))
 
     """
     http://mmonit.com/documentation/http-api/Methods/Events
     """
     def events_list(self):
-        return self._get("/reports/events/list")
+        return json.loads(self._get("/reports/events/list").decode('utf-8'))
 
     def events_get(self, event_id):
-        return self._get("/reports/events/get?id={}".format(event_id))
+        return json.loads(self._get("/reports/events/get?id={}".format(event_id)).decode('utf-8'))
 
     def events_summary(self):
-        return self._get("/reports/events/summary")
+        return json.loads(self._get("/reports/events/summary").decode('utf-8'))
 
     def events_dismiss(self, event_id):
-        return self._post("/reports/events/dismiss", event_id)
+        return json.loads(self._post("/reports/events/dismiss", event_id).decode('utf-8'))
 
     """
     http://mmonit.com/documentation/http-api/Methods/Admin_Hosts
     """
     def admin_hosts_list(self):
-        return self._get("/admin/hosts/list")
+        return json.loads(self._get("/admin/hosts/list").decode('utf-8'))
 
     def admin_hosts_get(self, host_id):
-        return self._get("/admin/hosts/get?id={}".format(host_id))
+        return json.loads(self._get("/admin/hosts/get?id={}".format(host_id)).decode('utf-8'))
 
     def admin_hosts_upadte(self, host_id, **kwargs):
         return NotImplemented
 
     def admin_hosts_delete(self, host_id):
-        return self._post("/admin/hosts/delete", {"id": host_id})
+        return json.loads(self._post("/admin/hosts/delete", {"id": host_id}).decode('utf-8'))
 
     def admin_hosts_test(self, ipaddr, port, ssl, monituser, monitpassword):
         data = {
@@ -120,7 +123,7 @@ class MMonit:
             "monituser": monituser,
             "monitpassword": monitpassword
         }
-        return self._post("/admin/hosts/test", data)
+        return json.loads(self._post("/admin/hosts/test", data).decode('utf-8'))
 
     def admin_hosts_action(self, id, action, service):
         data = {
@@ -128,4 +131,4 @@ class MMonit:
             "action": action,
             "service": service
         }
-        return self._post("/admin/hosts/action", data)
+        return json.loads(self._post("/admin/hosts/action", data).decode('utf-8'))
