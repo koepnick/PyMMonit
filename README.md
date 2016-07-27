@@ -1,4 +1,4 @@
 # PyMMonit
 MMonit API wrapper written in Python
 
-[![Build Status](https://travis-ci.org/jvrplmlmn/PyMMonit.svg)](https://travis-ci.org/jvrplmlmn/PyMMonit)
+Forked from jvrplmlmn to return MMonit queries as objects
